@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Сканер</title>
+  <link rel="icon" href="logo.png" type="image/png"> <!-- Значок вкладки -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style> 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #444;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: white;
+      position: relative;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('logo.png');
+      background-size: cover;
+      background-position: center 40%; /* Сдвигаем картинку вниз на 20% */
+      background-repeat: no-repeat;
+      opacity: 0.7; /* Прозрачность картинки */
+      z-index: -1;
+    }
+
+    h2 {
+      color: #ffffff;
+      margin-bottom: 20px;
+      font-size: 26px;
+    }
+
+    .mode-select {
+      background: #555;
+      border: 2px solid #b30000;
+      border-radius: 14px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 16px 24px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .mode-select label {
+      font-size: 18px;
+      color: white;
+      background: #800000;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+    }
+
+    .mode-select input[type="radio"] {
+      display: none;
+    }
+
+    .mode-select input[type="radio"]:checked + span {
+      background: white;
+      color: #800000;
+      font-weight: bold;
+      transform: scale(1.05);
+    }
+
+    #reader {
+      width: 320px;
+      max-width: 100%;
+      background: #1e1e1e;
+      border: 3px solid #b30000;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    @media (max-width: 480px) {
+      .mode-select {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      body {
+        padding: 20px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Выберите режим</h2>
+  <div class="mode-select">
+    <label>
+      <input type="radio" name="mode" value="in" checked>
+      <span>Вход</span>
+    </label>
+    <label>
+      <input type="radio" name="mode" value="out">
+      <span>Выход</span>
+    </label>
+  </div>
+
+  <div id="reader"></div>
+
+  <script>
+    const reader = new Html5Qrcode("reader");
+    const config = { fps: 10, qrbox: 250 };
+
+    function getCurrentMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+
+    function sendToGoogleSheets(fullName, mode) {
+      const [lastName, firstName] = fullName.trim().split(" ");
+      const payload = {
+        firstName,
+        lastName,
+        mode
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbywqgP5FEtknsjYcaKdDdoqzs6hpMw2V9ixpmjd-9XVIm2ojyp51l4gVOKcMqsziwBWbw/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      reader.stop();
+      const mode = getCurrentMode();
+      sendToGoogleSheets(decodedText, mode);
+      alert("Успешно: " + decodedText + " (" + (mode === 'in' ? 'Вход' : 'Выход') + ")");
+      setTimeout(() => location.reload(), 1500);
+    }
+
+    reader.start({ facingMode: "environment" }, config, onScanSuccess);
+  </script>
+</body>
+</html>
