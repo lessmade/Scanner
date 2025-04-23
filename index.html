@@ -31,16 +31,16 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background-image: url('logo.png');
       background-size: cover;
-      background-position: center 40%; /* Сдвигаем картинку вниз на 20% */
+      background-position: center 20%; /* Сдвигаем картинку вниз на 20% */
       background-repeat: no-repeat;
-      opacity: 0.7; /* Прозрачность картинки */
+      opacity: 0.3; /* Прозрачность картинки */
       z-index: -1;
     }
 
     h2 {
       color: #ffffff;
-      margin-bottom: 20px;
-      font-size: 26px;
+      margin-bottom: 28px; /* Увеличил отступ, чтобы всё гармонично смотрелось */
+      font-size: 36px; /* Увеличил размер шрифта */
     }
 
     .mode-select {
@@ -48,18 +48,18 @@
       border: 2px solid #b30000;
       border-radius: 14px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 16px 24px;
-      margin-bottom: 30px;
+      padding: 30px 47px; /* Увеличил отступы кнопок на 20% */
+      margin-bottom: 58px; /* Увеличил отступ снизу */
       display: flex;
-      gap: 20px;
+      gap: 38px; /* Увеличил расстояние между кнопками на 20% */
       justify-content: center;
     }
 
     .mode-select label {
-      font-size: 18px;
+      font-size: 34px; /* Увеличил размер шрифта кнопок на 20% */
       color: white;
       background: #800000;
-      padding: 10px 20px;
+      padding: 19px 38px; /* Увеличил отступы кнопок на 20% */
       border-radius: 8px;
       transition: all 0.3s ease;
       cursor: pointer;
@@ -80,7 +80,7 @@
     }
 
     #reader {
-      width: 320px;
+      width: 618px; /* Увеличил размер окошка сканера на 66% */
       max-width: 100%;
       background: #1e1e1e;
       border: 3px solid #b30000;
@@ -92,11 +92,11 @@
     @media (max-width: 480px) {
       .mode-select {
         flex-direction: column;
-        gap: 16px;
+        gap: 28px; /* Увеличил пространство для маленьких экранов */
       }
 
       body {
-        padding: 20px 10px;
+        padding: 30px 15px; /* Уменьшил отступы для мобильных */
       }
     }
   </style>
@@ -118,7 +118,7 @@
 
   <script>
     const reader = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: 250 };
+    const config = { fps: 10, qrbox: 483 }; /* Увеличил размер окна сканера на 66% */
 
     function getCurrentMode() {
       return document.querySelector('input[name="mode"]:checked').value;
